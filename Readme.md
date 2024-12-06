@@ -1,7 +1,8 @@
 # Проект «Большое путешествие»
 
 * Студент: [Максим Рой](https://up.htmlacademy.ru/ecmascript-individual/2/user/2572031).
-* Наставник: [Сергей Андреев](https://htmlacademy.ru/profile/id812127)..
+
+* Наставник: [Сергей Андреев](https://htmlacademy.ru/profile/id812127).
 
 ---
 
