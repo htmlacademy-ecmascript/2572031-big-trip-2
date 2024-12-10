@@ -14,7 +14,6 @@ function createInfoTemplate() {
             </p>
           </section>`
   );
-
 }
 
 export default class InfoTemplate {
@@ -28,5 +27,4 @@ export default class InfoTemplate {
     }
     return this.element;
   }
-
 }
