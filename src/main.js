@@ -1,5 +1,5 @@
-import BoardPresenter from './board-presenter.js';
+import HeaderPresenter from './header-presenter.js';
 
-const mainContainer = document.querySelector('.trip-events');
+const mainContainer = document.querySelector('.trip-main');
 
-new BoardPresenter(mainContainer).init();
+new HeaderPresenter(mainContainer).init();

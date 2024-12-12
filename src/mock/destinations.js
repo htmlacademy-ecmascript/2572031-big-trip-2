@@ -1,15 +1,49 @@
 const mockDestinations = [
-    {
-        "id": "cfe416cq-10xa-ye10-8077-2fs9a01edcab",
-        "description": "Chamonix, is a beautiful city, a true asian pearl, with crowded streets.",
-        "name": "Chamonix",
-        "pictures": [
-            {
-                "src": "http://picsum.photos/300/200?r=0.0762563005163317",
-                "description": "Chamonix parliament building"
-            }
-        ]
-    }
-]
+  {
+    id: 'cf2',
+    description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
+    name: 'Chamonix',
+    pictures: [
+      {
+        src: 'https://random.onl/images/pictures/np31.jpg',
+        description: 'Chamonix parliament building'
+      },
+      {
+        src: 'https://random.onl/images/pictures/np31.jpg',
+        description: 'Chamonix parliament building'
+      },
+      {
+        src: 'https://random.onl/images/pictures/np31.jpg',
+        description: 'Chamonix parliament building'
+      },
+      {
+        src: 'https://random.onl/images/pictures/np31.jpg',
+        description: 'Chamonix parliament building'
+      }
+    ]
+  },
+  {
+    id: 'bf5',
+    description: 'Moscow, is a beautiful city, a true asian pearl, with crowded streets.',
+    name: 'Moscow',
+    pictures: [
+      {
+        src: 'https://via.assets.so/game.jpg?w=1280&h=720',
+        description: 'Moscow parliament building'
+      },
+      {
+        src: 'https://via.assets.so/game.jpg?w=1280&h=720',
+        description: 'Moscow parliament building'
+      },
+    ]
+  },
+  {
+    id: 'fe2',
+    description: 'Paris, is a beautiful city, a true asian pearl, with crowded streets.',
+    name: 'Paris',
+    pictures: [
+    ]
+  },
+];
 
-export {mockDestinations}
+export {mockDestinations};

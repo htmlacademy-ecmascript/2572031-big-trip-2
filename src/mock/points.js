@@ -1,20 +1,46 @@
-import { getRandomArrayElement } from "../utils.js"
+import { getRandomArrayElement } from '../utils.js';
 
 const mockPoints = [
-    {
-        "id": "f4b62099-293f-4c3d-a702-94eec4a2808c",
-        "base_price": 1100,
-        "date_from": "2019-07-10T22:55:56.845Z",
-        "date_to": "2019-07-11T11:22:13.375Z",
-        "destination": "bfa5cb75-a1fe-4b77-a83c-0e528e910e04",
-        "is_favorite": false,
-        "offers": [
-        "b4c3e4e6-9053-42ce-b747-e281314baa31"
-        ],
-        "type": "taxi"
-    }
-]
+  {
+    id: 'f1',
+    basePrice: 1100,
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-08-11T11:22:13.375Z',
+    destination: 'bf5',
+    isFavorite: false,
+    offers: [
+      't1',
+      't2',
+      't5'
+    ],
+    type: 'taxi'
+  },
+  {
+    id: 'f2',
+    basePrice: 500,
+    dateFrom: '2019-07-13T19:30:56.845Z',
+    dateTo: '2019-07-14T10:15:13.375Z',
+    destination: 'cf2',
+    isFavorite: true,
+    offers: [
+      's1',
+      's2',
+    ],
+    type: 'ship'
+  },
+  {
+    id: 'f3',
+    basePrice: 12500,
+    dateFrom: '2019-07-13T10:30:00.845Z',
+    dateTo: '2019-07-13T11:20:00.375Z',
+    destination: 'fe2',
+    isFavorite: false,
+    offers: [],
+    type: 'flight'
+  }
+];
 
-const getRandomPoints = () => getRandomArrayElement(mockPoints);
+const getRandomPoints = () => Array.from({ length: 3 }, () => getRandomArrayElement(mockPoints));
 
-export {getRandomPoints}
+export {getRandomPoints};
+

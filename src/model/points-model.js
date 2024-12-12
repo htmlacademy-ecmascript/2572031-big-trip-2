@@ -1,38 +1,42 @@
-import { getRandomPoints } from "../mock/points.js";
-import { mockOffers } from "../mock/offers.js";
-import { mockDestinations } from "../mock/destinations.js";
 
-export default class PointModel {
-    point = Array.from(1, getRandomPoints);
-    offers = mockOffers
-    destination = mockDestinations;
 
-    getPoints() {
-        return this.point;
+export default class TripModel {
+
+  constructor(points, offers, destination) {
+    this.point = points;
+    this.offers = offers;
+    this.destination = destination;
+  }
+
+  getPoints() {
+    return this.point;
+  }
+
+  getOffers() {
+    return this.offers;
+  }
+
+  getDestinations() {
+    return this.destination;
+  }
+
+  getOffersByType(type){
+    const allOffers = this.getOffers();
+    return allOffers.find((offer) => offer.type === type);
+  }
+
+  getOffersById(type, itemsId) {
+    if (!this.getOffersByType(type)){
+      return [];
     }
+    const offersType = this.getOffersByType(type);
+    return offersType.offers.filter((item) => itemsId.find((id) => item.id === id));
+  }
 
-    getOffers() {
-        return this.offers;
-    }
 
-    getOffersByType(type){
-        const allOffers = this.getOffers();
-        return allOffers.find((offer) => offer.type === type);
-    }
+  getDestinationById(id) {
+    const allDestination = this.getDestinations();
 
-    getOffersById(type, itemsId) {
-        const offersType = this.getOffersByType(type);
-
-        return offersType.offers.filter((item) => itemsId.find((id) => item.id === id));
-    }
-
-    getDestination() {
-        return this.destination;
-    }
-
-    getDestinationById(id) {
-        const allDestination = this.getDestination();
-
-        return allDestination.find((item) => item.id === id);
-    }
+    return allDestination.find((item) => item.id === id);
+  }
 }
