@@ -1,5 +1,5 @@
-import HeaderPresenter from './header-presenter.js';
+import Presenter from './presenter.js';
 
 const mainContainer = document.querySelector('.trip-main');
 
-new HeaderPresenter(mainContainer).init();
+new Presenter(mainContainer).init();

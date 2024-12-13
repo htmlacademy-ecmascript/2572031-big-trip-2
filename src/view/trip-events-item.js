@@ -1,4 +1,5 @@
 import { createElement } from '../render.js';
+import { dateModule } from '../utils.js';
 
 function createTripEventsItemTemplate(model){
 
@@ -12,18 +13,18 @@ function createTripEventsItemTemplate(model){
     ` 
         <li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="${dateFrom}">${dateFrom.toLocaleDateString('en-US', { month: 'short', day:'2-digit' })} </time>
+                <time class="event__date" datetime="${dateFrom}">${dateModule.formatDate(dateFrom)} </time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${point.type} ${destination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${dateFrom}">${dateFrom.getUTCHours()}:${dateFrom.getUTCMinutes()}</time>
+                    <time class="event__start-time" datetime="${dateFrom}">${dateModule.formatTime(dateFrom)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${dateTo}">${dateTo.getUTCHours()}:${dateTo.getUTCMinutes()}</time>
+                    <time class="event__end-time" datetime="${dateTo}">${dateModule.formatTime(dateTo)}</time>
                   </p>
-                  <p class="event__duration">${Math.abs(Math.round((dateTo.getTime() - dateFrom.getTime()) / 1000 / 60))} M</p>
+                  <p class="event__duration">${dateModule.formatDuration(dateFrom, dateTo)}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${point.basePrice}</span>
