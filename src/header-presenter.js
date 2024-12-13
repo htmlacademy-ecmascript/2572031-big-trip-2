@@ -13,13 +13,14 @@ import {render} from './render.js';
 import TripModel from './model/points-model.js';
 
 export default class BoardPresenter {
+  model = new TripModel(getRandomPoints(), mockOffers, mockDestinations);
   tripMainComponent = new TripMainInfo(mockDestinations, getRandomPoints);
   TripFiltersComponent = new TripFilters();
   tripSortComponent = new TripSort();
   tripEventsList = new TripEventsList();
-  tripEventsEdit = new TripEventsEdit();
+  tripEventsEdit = new TripEventsEdit(this.model);
 
-  model = new TripModel(getRandomPoints(), mockOffers, mockDestinations);
+  
 
   tripMainContainer = document.querySelector('.trip-main');
   tripFiltersContainer = document.querySelector('.trip-controls');
