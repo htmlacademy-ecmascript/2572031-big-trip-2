@@ -2,7 +2,6 @@ import { createElement } from '../render.js';
 import { dateModule } from '../utils.js';
 
 function createTripEventsItemTemplate(model){
-
   const point = model.getPoints().shift();
   const destination = model.getDestinationById(point.destination);
   const offers = model.getOffersById(point.type, point.offers);
@@ -55,7 +54,6 @@ function createTripEventsItemTemplate(model){
 }
 
 export default class TripEventsItem {
-
   constructor(model) {
     this.model = model;
   }

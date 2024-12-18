@@ -1,9 +1,9 @@
 import TripMainInfo from './view/trip-main-info-view.js';
 import TripFilters from './view/trip-filters-view.js';
 import TripSort from './view/trip-sort-view.js';
-import TripEventsList from './view/trip-events-list.js';
+import TripEventsList from './view/trip-events-list-view.js';
 import TripEventsEdit from './view/trip-events-edit-view.js';
-import TripEventsItem from './view/trip-events-item.js';
+import TripEventsItem from './view/trip-events-item-view.js';
 
 import { mockDestinations} from './mock/destinations.js';
 import { mockOffers } from './mock/offers.js';

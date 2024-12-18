@@ -1,5 +1,3 @@
-
-
 export default class Model {
 
   constructor(points, offers, destination) {
@@ -32,7 +30,6 @@ export default class Model {
     const offersType = this.getOffersByType(type);
     return offersType.offers.filter((item) => itemsId.find((id) => item.id === id));
   }
-
 
   getDestinationById(id) {
     const allDestination = this.getDestinations();

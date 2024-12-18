@@ -130,7 +130,6 @@ function createTripEventsEditTemplate(model){
                 </section>
               </form>
             </li>
-            
     `
   );
 }
