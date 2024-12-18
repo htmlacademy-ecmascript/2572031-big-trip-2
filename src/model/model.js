@@ -1,6 +1,6 @@
 
 
-export default class TripModel {
+export default class Model {
 
   constructor(points, offers, destination) {
     this.point = points;

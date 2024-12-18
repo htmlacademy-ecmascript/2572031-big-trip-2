@@ -10,10 +10,10 @@ import { mockOffers } from './mock/offers.js';
 import { getRandomPoints } from './mock/points.js';
 import {render} from './render.js';
 
-import TripModel from './model/points-model.js';
+import Model from './model/model.js';
 
 export default class Presenter {
-  model = new TripModel(getRandomPoints(), mockOffers, mockDestinations);
+  model = new Model(getRandomPoints(), mockOffers, mockDestinations);
 
   mainContainer = document.querySelector('.trip-main');
   filtersContainer = document.querySelector('.trip-controls');

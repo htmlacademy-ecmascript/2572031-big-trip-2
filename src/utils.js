@@ -19,7 +19,7 @@ const dateModule = {
   },
   formatDateTime: (date) => {
     const day = String(date.getUTCDate()).padStart(2, '0');
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Месяцы в JavaScript начинаются с 0
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const year = String(date.getUTCFullYear()).slice(-2); // Последние две цифры года
     const hours = String(date.getUTCHours()).padStart(2, '0');
     const minutes = String(date.getUTCMinutes()).padStart(2, '0');
