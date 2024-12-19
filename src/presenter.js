@@ -4,17 +4,15 @@ import SortView from './view/sort-view.js';
 import EventsListView from './view/events-list-view.js';
 import EventsEditView from './view/events-edit-view.js';
 import EventsItemView from './view/events-item-view.js';
-import {render} from './render.js';
+import {render} from './framework/render.js';
 
 export default class Presenter {
-  filtersContainer = null;
   sortContainer = null;
   eventsContainer = new EventsListView();
 
   constructor(container, model) {
     this.container = container;
     this.model = model;
-    this.filtersContainer = this.container.querySelector('.trip-controls');
     this.sortContainer = document.querySelector('.trip-events');
   }
 
@@ -35,7 +33,7 @@ export default class Presenter {
   }
 
   renderFilters() {
-    render(new FiltersView(), this.filtersContainer);
+    render(new FiltersView(), this.container);
   }
 
   renderSort() {
@@ -52,7 +50,7 @@ export default class Presenter {
     const offers = this.model.getOffersById(point.type, point.offers);
     const allDestinations = this.model.getDestinations();
 
-    render(new EventsEditView(point, destination, offers, allDestinations), this.eventsContainer.getElement(), 'beforeend');
+    render(new EventsEditView(point, destination, offers, allDestinations), this.eventsContainer.element, 'beforeend');
   }
 
   renderEventsItems() {
@@ -62,7 +60,7 @@ export default class Presenter {
       const offers = this.model.getOffersById(point.type, point.offers);
       const eventItem = new EventsItemView(point, destination, offers);
 
-      render(eventItem, this.eventsContainer.getElement(), 'beforeend');
+      render(eventItem, this.eventsContainer.element, 'beforeend');
     }
   }
 }

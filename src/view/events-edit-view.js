@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { dateModule } from '../utils.js';
 
 function createEventsEditTemplate(point, destination, offers , allDestinations) {
@@ -131,22 +131,24 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
   );
 }
 
-export default class EventsEditView {
+export default class EventsEditView extends AbstractView {
   constructor(point, destination, offers, allDestinations) {
+    super();
     this.point = point;
     this.destination = destination;
     this.offers = offers;
     this.allDestinations = allDestinations;
   }
 
-  getTemplate() {
+  get template() {
     return createEventsEditTemplate(this.point, this.destination, this.offers, this.allDestinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
+  set formSubmitHandler(callback){
+    this.element.querySelector('.form').addEventListener('submit', callback);
+  }
+
+  set resetButtonClickHandler(callback){
+    this.element.querySelector('.event__reset-btn').addEventListener('click', callback);
   }
 }
