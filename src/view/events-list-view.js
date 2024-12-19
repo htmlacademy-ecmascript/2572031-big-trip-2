@@ -9,7 +9,7 @@ function createTripEventsListTemplate(){
   );
 }
 
-export default class TripEventsList {
+export default class EventsListView {
   getTemplate() {
     return createTripEventsListTemplate();
   }

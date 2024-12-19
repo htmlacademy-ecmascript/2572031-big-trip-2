@@ -1,9 +1,7 @@
 import { createElement } from '../render.js';
 import { dateModule } from '../utils.js';
 
-function createTripMainInfoTemplate(model){
-  const point = model.getPoints()[0];
-  const destination = model.getDestinationById(point.destination);
+function createMainInfoTemplate(point, destination) {
   const dateFrom = new Date(point.dateFrom);
   const dateTo = new Date(point.dateTo);
 
@@ -23,13 +21,14 @@ function createTripMainInfoTemplate(model){
   );
 }
 
-export default class TripMainInfo {
-  constructor(model) {
-    this.model = model;
+export default class MainInfoView {
+  constructor(point, destination) {
+    this.point = point;
+    this.destination = destination;
   }
 
   getTemplate() {
-    return createTripMainInfoTemplate(this.model);
+    return createMainInfoTemplate(this.point, this.destination);
   }
 
   getElement() {
