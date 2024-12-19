@@ -11,9 +11,11 @@ const dateModule = {
 
     if (days > 0) {
       return `${days}D ${hours}H ${minutes}M`;
-    } else if (hours > 0) {
+    }
+    if (hours > 0) {
       return `${hours}H ${minutes}M`;
-    } else {
+    }
+    if (minutes > 0) {
       return `${minutes}M`;
     }
   },

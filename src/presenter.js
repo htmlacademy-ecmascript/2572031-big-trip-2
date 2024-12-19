@@ -1,39 +1,68 @@
-import TripMainInfo from './view/trip-main-info-view.js';
-import TripFilters from './view/trip-filters-view.js';
-import TripSort from './view/trip-sort-view.js';
-import TripEventsList from './view/trip-events-list-view.js';
-import TripEventsEdit from './view/trip-events-edit-view.js';
-import TripEventsItem from './view/trip-events-item-view.js';
-
-import { mockDestinations} from './mock/destinations.js';
-import { mockOffers } from './mock/offers.js';
-import { getRandomPoints } from './mock/points.js';
+import MainInfoView from './view/main-info-view.js';
+import FiltersView from './view/filters-view.js';
+import SortView from './view/sort-view.js';
+import EventsListView from './view/events-list-view.js';
+import EventsEditView from './view/events-edit-view.js';
+import EventsItemView from './view/events-item-view.js';
 import {render} from './render.js';
 
-import Model from './model/model.js';
-
 export default class Presenter {
-  model = new Model(getRandomPoints(), mockOffers, mockDestinations);
+  filtersContainer = null;
+  sortContainer = null;
+  eventsContainer = new EventsListView();
 
-  mainContainer = document.querySelector('.trip-main');
-  filtersContainer = document.querySelector('.trip-controls');
-  sortContainer = document.querySelector('.trip-events');
-  eventsContainer = new TripEventsList();
-
-  constructor(container) {
+  constructor(container, model) {
     this.container = container;
+    this.model = model;
+    this.filtersContainer = this.container.querySelector('.trip-controls');
+    this.sortContainer = document.querySelector('.trip-events');
   }
 
-  init () {
-    render(new TripMainInfo(this.model), this.mainContainer);
-    render(new TripFilters(), this.filtersContainer);
-    render(new TripSort(), this.sortContainer);
-    render(this.eventsContainer, this.sortContainer, 'beforeend');
-    render(new TripEventsEdit(this.model), this.eventsContainer.getElement(),'beforeend');
+  init() {
+    this.renderMainInfo();
+    this.renderFilters();
+    this.renderSort();
+    this.renderEventsList();
+    this.renderEventsEdit();
+    this.renderEventsItems();
+  }
 
+  renderMainInfo() {
+    const point = this.model.getPoints()[0];
+    const destination = this.model.getDestinationById(point.destination);
+
+    render(new MainInfoView(point, destination), this.container);
+  }
+
+  renderFilters() {
+    render(new FiltersView(), this.filtersContainer);
+  }
+
+  renderSort() {
+    render(new SortView(), this.sortContainer);
+  }
+
+  renderEventsList() {
+    render(this.eventsContainer, this.sortContainer, 'beforeend');
+  }
+
+  renderEventsEdit() {
+    const point = this.model.getPoints()[0];
+    const destination = this.model.getDestinationById(point.destination);
+    const offers = this.model.getOffersById(point.type, point.offers);
+    const allDestinations = this.model.getDestinations();
+
+    render(new EventsEditView(point, destination, offers, allDestinations), this.eventsContainer.getElement(), 'beforeend');
+  }
+
+  renderEventsItems() {
     for (let i = 0; i < 3; i++) {
-      const tripEventsItem = new TripEventsItem(this.model);
-      render(tripEventsItem, this.eventsContainer.getElement(),'beforeend');
+      const point = this.model.getPoints().shift();
+      const destination = this.model.getDestinationById(point.destination);
+      const offers = this.model.getOffersById(point.type, point.offers);
+      const eventItem = new EventsItemView(point, destination, offers);
+
+      render(eventItem, this.eventsContainer.getElement(), 'beforeend');
     }
   }
 }

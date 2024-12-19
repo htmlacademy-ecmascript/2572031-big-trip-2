@@ -1,10 +1,7 @@
 import { createElement } from '../render.js';
 import { dateModule } from '../utils.js';
 
-function createTripEventsEditTemplate(model){
-  const point = model.getPoints()[0];
-  const destination = model.getDestinationById(point.destination);
-  const offers = model.getOffersById(point.type, point.offers);
+function createEventsEditTemplate(point, destination, offers , allDestinations) {
   const dateFrom = new Date(point.dateFrom);
   const dateTo = new Date(point.dateTo);
 
@@ -78,7 +75,7 @@ function createTripEventsEditTemplate(model){
                     </label>
                     <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
                     <datalist id="destination-list-1">
-                        ${model.getDestinations().map((city) => `<option value="${city.name}"></option>`).join(' ')}
+                        ${allDestinations.map((city) => `<option value="${city.name}"></option>`).join(' ')}
                     </datalist>
                   </div>
 
@@ -134,13 +131,16 @@ function createTripEventsEditTemplate(model){
   );
 }
 
-export default class TripEventsEdit {
-  constructor(model){
-    this.model = model;
+export default class EventsEditView {
+  constructor(point, destination, offers, allDestinations) {
+    this.point = point;
+    this.destination = destination;
+    this.offers = offers;
+    this.allDestinations = allDestinations;
   }
 
   getTemplate() {
-    return createTripEventsEditTemplate(this.model);
+    return createEventsEditTemplate(this.point, this.destination, this.offers, this.allDestinations);
   }
 
   getElement() {
