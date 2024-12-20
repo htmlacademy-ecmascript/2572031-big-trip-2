@@ -70,7 +70,7 @@ export default class Presenter {
       document.removeEventListener('keydown', this.escKeyDownHandler);
     });
 
-    eventEdit.setResetButtonClickHandler(() => {
+    eventEdit.setRollupButtonClickHandler(() => {
       replace(eventItem, eventEdit);
       remove(eventEdit);
       document.removeEventListener('keydown', this.escKeyDownHandler);

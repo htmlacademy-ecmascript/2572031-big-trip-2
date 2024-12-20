@@ -96,7 +96,10 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Cancel</button>
+                  <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -148,7 +151,7 @@ export default class EventsEditView extends AbstractView {
     this.element.querySelector('.event--edit')?.addEventListener('submit', callback);
   }
 
-  setResetButtonClickHandler(callback) {
-    this.element.querySelector('.event__reset-btn')?.addEventListener('click', callback);
+  setRollupButtonClickHandler(callback) {
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', callback);
   }
 }
