@@ -144,11 +144,11 @@ export default class EventsEditView extends AbstractView {
     return createEventsEditTemplate(this.point, this.destination, this.offers, this.allDestinations);
   }
 
-  set formSubmitHandler(callback){
-    this.element.querySelector('.form').addEventListener('submit', callback);
+  setFormSubmitHandler(callback) {
+    this.element.querySelector('.event--edit')?.addEventListener('submit', callback);
   }
 
-  set resetButtonClickHandler(callback){
-    this.element.querySelector('.event__reset-btn').addEventListener('click', callback);
+  setResetButtonClickHandler(callback) {
+    this.element.querySelector('.event__reset-btn')?.addEventListener('click', callback);
   }
 }
