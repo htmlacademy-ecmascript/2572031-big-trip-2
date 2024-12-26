@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { dateModule } from '../utils.js';
 
 function createEventsEditTemplate(point, destination, offers , allDestinations) {
@@ -47,7 +47,7 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
                         </div>
 
                         <div class="event__type-item">
-                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
                           <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                         </div>
 
@@ -96,7 +96,10 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Cancel</button>
+                  <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -131,22 +134,24 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
   );
 }
 
-export default class EventsEditView {
+export default class EventsEditView extends AbstractView {
   constructor(point, destination, offers, allDestinations) {
+    super();
     this.point = point;
     this.destination = destination;
     this.offers = offers;
     this.allDestinations = allDestinations;
   }
 
-  getTemplate() {
+  get template() {
     return createEventsEditTemplate(this.point, this.destination, this.offers, this.allDestinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
+  setFormSubmitHandler(callback) {
+    this.element.querySelector('.event--edit')?.addEventListener('submit', callback);
+  }
+
+  setRollupButtonClickHandler(callback) {
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', callback);
   }
 }

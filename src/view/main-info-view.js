@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { dateModule } from '../utils.js';
 
 function createMainInfoTemplate(point, destination) {
@@ -21,21 +21,15 @@ function createMainInfoTemplate(point, destination) {
   );
 }
 
-export default class MainInfoView {
+export default class MainInfoView extends AbstractView {
   constructor(point, destination) {
+    super();
     this.point = point;
     this.destination = destination;
   }
 
-  getTemplate() {
+  get template() {
     return createMainInfoTemplate(this.point, this.destination);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
   }
 }
 
