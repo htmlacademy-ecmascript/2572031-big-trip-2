@@ -2,9 +2,8 @@ import MainInfoView from './view/main-info-view.js';
 import FiltersView from './view/filters-view.js';
 import SortView from './view/sort-view.js';
 import EventsListView from './view/events-list-view.js';
-import EventsEditView from './view/events-edit-view.js';
-import EventsItemView from './view/events-item-view.js';
-import {render, replace, remove} from './framework/render.js';
+import {render} from './framework/render.js';
+import PointPresenter from './point-presenter.js'; // Импортируем PointPresenter
 
 export default class Presenter {
   sortContainer = null;
@@ -43,49 +42,26 @@ export default class Presenter {
     render(this.eventsContainer, this.sortContainer, 'beforeend');
   }
 
+
   renderEventsItems() {
     const points = this.model.getPoints().slice(0, 3);
     points.forEach((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const offers = this.model.getOffersById(point.type, point.offers);
-      const eventItem = new EventsItemView(point, destination, offers);
-      const eventEdit = new EventsEditView(point, destination, offers, this.model.getDestinations());
-
-      eventItem.setRollupButtonClickHandler(() => {
-        replace(eventEdit, eventItem);
-        this.setEditModeHandlers(eventEdit, eventItem);
-      });
-
-      render(eventItem, this.eventsContainer.element, 'beforeend');
+      const pointPresenter = new PointPresenter( // Используем PointPresenter
+        point,
+        destination,
+        offers,
+        this.model.getDestinations(),
+        this.#handleDataChange
+      );
+      pointPresenter.init(this.eventsContainer.element);
     });
   }
 
-  setEditModeHandlers(eventEdit, eventItem) {
-    this.eventEdit = eventEdit;
-    this.eventItem = eventItem;
 
-    eventEdit.setFormSubmitHandler(() => {
-      replace(eventItem, eventEdit);
-      remove(eventEdit);
-      document.removeEventListener('keydown', this.escKeyDownHandler);
-    });
-
-    eventEdit.setRollupButtonClickHandler(() => {
-      replace(eventItem, eventEdit);
-      remove(eventEdit);
-      document.removeEventListener('keydown', this.escKeyDownHandler);
-    });
-
-    document.addEventListener('keydown', this.escKeyDownHandler);
-  }
-
-  escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      replace(this.eventItem, this.eventEdit);
-      remove(this.eventEdit);
-      document.removeEventListener('keydown', this.escKeyDownHandler);
-    }
+  #handleDataChange = (updatedEvent) => {
+    // Обновляем данные в модели
+    this.model.updatePoint(updatedEvent);
   };
-
 }
