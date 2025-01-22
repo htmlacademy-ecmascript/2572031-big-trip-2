@@ -12,23 +12,26 @@ export default class PointPresenter {
   #destinations = null;
   #handleDataChange = null;
   #container = null;
-  #onEditClose = null; // Колбэк для закрытия редактирования
-  #isEditMode = false; // Флаг для отслеживания режима редактирования
+  #onEditClose = null;
+  #isEditMode = false;
+  #allOffers = null;
 
-  constructor(event, destination, offers, destinations, onDataChange, onEditClose) {
+
+  constructor(event, destination, offers, destinations, onDataChange, onEditClose, allOffers) {
     this.#event = event;
     this.#destination = destination;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleDataChange = onDataChange;
-    this.#onEditClose = onEditClose; // Сохраняем колбэк
+    this.#onEditClose = onEditClose;
+    this.#allOffers = allOffers;
   }
 
   init(container) {
     this.#container = container;
 
     this.#eventItem = new EventsItemView(this.#event, this.#destination, this.#offers);
-    this.#eventEdit = new EventsEditView(this.#event, this.#destination, this.#offers, this.#destinations);
+    this.#eventEdit = new EventsEditView(this.#event, this.#destination, this.#offers, this.#destinations, this.#allOffers);
 
     this.#eventItem.setRollupButtonClickHandler(this.#handleRollupClick);
     this.#eventItem.setFavoriteButtonClickHandler(this.#handleFavoriteClick);
@@ -38,11 +41,11 @@ export default class PointPresenter {
 
   #setEditModeHandlers = (eventEdit, eventItem) => {
     if (this.#isEditMode) {
-      return; // Если уже в режиме редактирования, ничего не делаем
+      return;
     }
 
-    this.#isEditMode = true; // Устанавливаем флаг режима редактирования
-    this.#onEditClose(this); // Уведомляем Presenter, что открывается новый eventEdit
+    this.#isEditMode = true;
+    this.#onEditClose(this);
 
     replace(eventEdit, eventItem);
 
@@ -50,14 +53,14 @@ export default class PointPresenter {
       replace(eventItem, eventEdit);
       remove(eventEdit);
       document.removeEventListener('keydown', this.#escKeyDownHandler);
-      this.#isEditMode = false; // Сбрасываем флаг режима редактирования
+      this.#isEditMode = false;
     });
 
     eventEdit.setRollupButtonClickHandler(() => {
       replace(eventItem, eventEdit);
       remove(eventEdit);
       document.removeEventListener('keydown', this.#escKeyDownHandler);
-      this.#isEditMode = false; // Сбрасываем флаг режима редактирования
+      this.#isEditMode = false;
     });
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -69,7 +72,7 @@ export default class PointPresenter {
       replace(this.#eventItem, this.#eventEdit);
       remove(this.#eventEdit);
       document.removeEventListener('keydown', this.#escKeyDownHandler);
-      this.#isEditMode = false; // Сбрасываем флаг режима редактирования
+      this.#isEditMode = false;
     }
   };
 
@@ -86,7 +89,9 @@ export default class PointPresenter {
       replace(this.#eventItem, this.#eventEdit);
       remove(this.#eventEdit);
       document.removeEventListener('keydown', this.#escKeyDownHandler);
-      this.#isEditMode = false; // Сбрасываем флаг режима редактирования
+      this.#isEditMode = false;
+    } else {
+      remove(this.#eventEdit);
     }
   }
 }

@@ -30,5 +30,18 @@ const dateModule = {
   }
 };
 
-export {getRandomArrayElement, dateModule};
+const sortPoints = (points, sortType) => {
+  switch (sortType) {
+    case 'day':
+      return points.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
+    case 'time':
+      return points.sort((a, b) => (new Date(b.dateTo) - new Date(b.dateFrom)) - (new Date(a.dateTo) - new Date(a.dateFrom)));
+    case 'price':
+      return points.sort((a, b) => b.basePrice - a.basePrice);
+    default:
+      return points;
+  }
+};
+
+export {getRandomArrayElement, dateModule, sortPoints};
 

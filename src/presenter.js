@@ -5,7 +5,7 @@ import SortView from './view/sort-view.js';
 import EventsListView from './view/events-list-view.js';
 import {render} from './framework/render.js';
 import PointPresenter from './point-presenter.js';
-
+import { sortPoints } from './utils.js';
 export default class Presenter {
   sortContainer = null;
   eventsContainer = new EventsListView();
@@ -52,19 +52,26 @@ export default class Presenter {
   }
 
   renderEventsItems() {
-    const sortedPoints = this.#sortPoints(this.#points, this.#currentSortType);
+    if (this.#currentEdit) {
+      this.#currentEdit.closeEdit();
+      this.#currentEdit = null; // Сбрасываем текущий открытый PointPresenter
+    }
+
+    const sortedPoints = sortPoints(this.#points, this.#currentSortType);
     this.eventsContainer.element.innerHTML = '';
 
     sortedPoints.forEach((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const offers = this.model.getOffersById(point.type, point.offers);
+      const allOffers = this.model.getOffers();
       const pointPresenter = new PointPresenter(
         point,
         destination,
         offers,
         this.model.getDestinations(),
         this.#handleDataChange,
-        this.#handleEditOpen // Передаем колбэк для уведомления об открытии редактирования
+        this.#handleEditOpen,
+        allOffers,
       );
       pointPresenter.init(this.eventsContainer.element);
     });
@@ -76,9 +83,9 @@ export default class Presenter {
 
   #handleEditOpen = (pointPresenter) => {
     if (this.#currentEdit && this.#currentEdit !== pointPresenter) {
-      this.#currentEdit.closeEdit(); // Закрываем предыдущий открытый eventEdit
+      this.#currentEdit.closeEdit();
     }
-    this.#currentEdit = pointPresenter; // Сохраняем текущий открытый eventEdit
+    this.#currentEdit = pointPresenter;
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -87,18 +94,5 @@ export default class Presenter {
     }
     this.#currentSortType = sortType;
     this.renderEventsItems();
-  };
-
-  #sortPoints = (points, sortType) => {
-    switch (sortType) {
-      case 'day':
-        return points.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
-      case 'time':
-        return points.sort((a, b) => (new Date(b.dateTo) - new Date(b.dateFrom)) - (new Date(a.dateTo) - new Date(a.dateFrom)));
-      case 'price':
-        return points.sort((a, b) => b.basePrice - a.basePrice);
-      default:
-        return points;
-    }
   };
 }
