@@ -9,12 +9,16 @@ import PointPresenter from './point-presenter.js';
 export default class Presenter {
   sortContainer = null;
   eventsContainer = new EventsListView();
-  #currentEdit = null; // Флаг для хранения текущего открытого eventEdit
+  #currentEdit = null;
+  #currentSortType = 'day';
+  #points = [];
+  #model = null;
 
   constructor(container, model) {
     this.container = container;
     this.model = model;
     this.sortContainer = document.querySelector('.trip-events');
+    this.#points = this.model.getPoints();
   }
 
   init() {
@@ -37,7 +41,10 @@ export default class Presenter {
   }
 
   renderSort() {
-    render(new SortView(), this.sortContainer);
+    const sortView = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange,
+    });
+    render(sortView, this.sortContainer);
   }
 
   renderEventsList() {
@@ -45,8 +52,10 @@ export default class Presenter {
   }
 
   renderEventsItems() {
-    const points = this.model.getPoints().slice(0, 3);
-    points.forEach((point) => {
+    const sortedPoints = this.#sortPoints(this.#points, this.#currentSortType);
+    this.eventsContainer.element.innerHTML = '';
+
+    sortedPoints.forEach((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const offers = this.model.getOffersById(point.type, point.offers);
       const pointPresenter = new PointPresenter(
@@ -70,5 +79,26 @@ export default class Presenter {
       this.#currentEdit.closeEdit(); // Закрываем предыдущий открытый eventEdit
     }
     this.#currentEdit = pointPresenter; // Сохраняем текущий открытый eventEdit
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#currentSortType = sortType;
+    this.renderEventsItems();
+  };
+
+  #sortPoints = (points, sortType) => {
+    switch (sortType) {
+      case 'day':
+        return points.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
+      case 'time':
+        return points.sort((a, b) => (new Date(b.dateTo) - new Date(b.dateFrom)) - (new Date(a.dateTo) - new Date(a.dateFrom)));
+      case 'price':
+        return points.sort((a, b) => b.basePrice - a.basePrice);
+      default:
+        return points;
+    }
   };
 }
