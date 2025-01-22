@@ -1,13 +1,15 @@
+// presenter.js
 import MainInfoView from './view/main-info-view.js';
 import FiltersView from './view/filters-view.js';
 import SortView from './view/sort-view.js';
 import EventsListView from './view/events-list-view.js';
 import {render} from './framework/render.js';
-import PointPresenter from './point-presenter.js'; // Импортируем PointPresenter
+import PointPresenter from './point-presenter.js';
 
 export default class Presenter {
   sortContainer = null;
   eventsContainer = new EventsListView();
+  #currentEdit = null; // Флаг для хранения текущего открытого eventEdit
 
   constructor(container, model) {
     this.container = container;
@@ -42,26 +44,31 @@ export default class Presenter {
     render(this.eventsContainer, this.sortContainer, 'beforeend');
   }
 
-
   renderEventsItems() {
     const points = this.model.getPoints().slice(0, 3);
     points.forEach((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const offers = this.model.getOffersById(point.type, point.offers);
-      const pointPresenter = new PointPresenter( // Используем PointPresenter
+      const pointPresenter = new PointPresenter(
         point,
         destination,
         offers,
         this.model.getDestinations(),
-        this.#handleDataChange
+        this.#handleDataChange,
+        this.#handleEditOpen // Передаем колбэк для уведомления об открытии редактирования
       );
       pointPresenter.init(this.eventsContainer.element);
     });
   }
 
-
   #handleDataChange = (updatedEvent) => {
-    // Обновляем данные в модели
     this.model.updatePoint(updatedEvent);
+  };
+
+  #handleEditOpen = (pointPresenter) => {
+    if (this.#currentEdit && this.#currentEdit !== pointPresenter) {
+      this.#currentEdit.closeEdit(); // Закрываем предыдущий открытый eventEdit
+    }
+    this.#currentEdit = pointPresenter; // Сохраняем текущий открытый eventEdit
   };
 }
