@@ -36,6 +36,7 @@ export default class PointPresenter {
     this.#eventItem.setFavoriteButtonClickHandler(this.#handleFavoriteClick);
 
     render(this.#eventItem, this.#container);
+    this.#eventEdit._restoreHandlers();
   }
 
   #setEditModeHandlers = (eventEdit, eventItem) => {
@@ -48,6 +49,7 @@ export default class PointPresenter {
 
     replace(eventEdit, eventItem);
 
+    eventEdit._restoreHandlers();
     eventEdit.setFormSubmitHandler(() => {
       replace(eventItem, eventEdit);
       remove(eventEdit);
