@@ -1,4 +1,3 @@
-// presenter.js
 import MainInfoView from './view/main-info-view.js';
 import FiltersView from './view/filters-view.js';
 import SortView from './view/sort-view.js';

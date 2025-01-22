@@ -1,4 +1,3 @@
-// point-presenter.js
 import EventsItemView from './view/events-item-view.js';
 import EventsEditView from './view/events-edit-view.js';
 import {render, replace, remove} from './framework/render.js';
