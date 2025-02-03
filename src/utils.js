@@ -44,4 +44,3 @@ const sortPoints = (points, sortType) => {
 };
 
 export {getRandomArrayElement, dateModule, sortPoints};
-
