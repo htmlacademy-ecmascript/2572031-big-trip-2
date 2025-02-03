@@ -1,10 +1,10 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { dateModule } from '../utils.js';
 
-function createEventsEditTemplate(point, destination, offers , allDestinations) {
-  const dateFrom = new Date(point.dateFrom);
-  const dateTo = new Date(point.dateTo);
-
+function createEventsEditTemplate(state, destination, allOffers , allDestinations) {
+  const dateFrom = new Date(state.dateFrom);
+  const dateTo = new Date(state.dateTo);
+  const currentOffers = allOffers.find((offer) => offer.type === state.type)?.offers || [];
   return(
     ` 
         <li class="trip-events__item">
@@ -13,7 +13,7 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${point.type}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${state.type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -71,7 +71,7 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                    ${point.type}
+                    ${state.type}
                     </label>
                     <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
                     <datalist id="destination-list-1">
@@ -105,10 +105,10 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
                   <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                       <div class="event__available-offers">
-                      ${offers.map((offer) => `
+                      ${currentOffers.map((offer) => `
                         <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${point.type}">
-                        <label class="event__offer-label" for="event-offer-${point.type}-1">
+                        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${state.type}">
+                        <label class="event__offer-label" for="event-offer-${state.type}-1">
                           <span class="event__offer-title">${offer.title}</span>
                           &plus;&euro;&nbsp;
                           <span class="event__offer-price">${offer.price}</span>
@@ -134,24 +134,74 @@ function createEventsEditTemplate(point, destination, offers , allDestinations) 
   );
 }
 
-export default class EventsEditView extends AbstractView {
-  constructor(point, destination, offers, allDestinations) {
+export default class EventsEditView extends AbstractStatefulView {
+  #destination = null;
+  #offers = null;
+  #allDestinations = null;
+  #allOffers = null;
+
+  constructor(point, destination, offers, allDestinations, allOffers) {
     super();
-    this.point = point;
-    this.destination = destination;
-    this.offers = offers;
-    this.allDestinations = allDestinations;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#allDestinations = allDestinations;
+    this.#allOffers = allOffers || [];
+
+    this._setState({
+      ...point,
+      destination: this.#destination.id,
+      offers: point.offers || [],
+    });
+
+    this._callback = {
+      formSubmit: null,
+      rollupClick: null,
+    };
+
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEventsEditTemplate(this.point, this.destination, this.offers, this.allDestinations);
+    const currentDestination = this.#allDestinations.find((dest) => dest.id === this._state.destination) || { name: '', description: '', pictures: [] };
+
+    return createEventsEditTemplate(this._state, currentDestination, this.#allOffers, this.#allDestinations);
   }
 
   setFormSubmitHandler(callback) {
-    this.element.querySelector('.event--edit')?.addEventListener('submit', callback);
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event--edit').addEventListener('submit', callback);
   }
 
   setRollupButtonClickHandler(callback) {
-    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', callback);
+    this._callback.rollupClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', callback);
   }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setRollupButtonClickHandler(this._callback.rollupClick);
+  }
+
+  #typeChangeHandler = (evt) => {
+    const selectedType = evt.target.value;
+    const selectedOffers = this.#allOffers.find((offer) => offer.type === selectedType)?.offers || [];
+
+    this.updateElement({
+      type: selectedType,
+      allOffers: selectedOffers.map((offer) => offer.id),
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    const selectedDestinationName = evt.target.value;
+    const selectedDestination = this.#allDestinations.find((dest) => dest.name === selectedDestinationName);
+    if (selectedDestination) {
+
+      this.updateElement({
+        destination: selectedDestination.id,
+      });
+    }
+  };
 }

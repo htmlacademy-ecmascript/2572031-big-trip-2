@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { dateModule } from '../utils.js';
 
 function createEventsItemTemplate(point, destination , offers){
@@ -50,19 +50,44 @@ function createEventsItemTemplate(point, destination , offers){
   );
 }
 
-export default class EventsItemView extends AbstractView {
-  constructor(point, destination , offers) {
+export default class EventsItemView extends AbstractStatefulView {
+  constructor(point, destination, offers) {
     super();
     this.point = point;
     this.destination = destination;
     this.offers = offers;
+
+    this._callback = {
+      rollupClick: null,
+      favoriteClick: null,
+    };
+
+    this._restoreHandlers();
   }
 
   get template() {
     return createEventsItemTemplate(this.point, this.destination, this.offers);
   }
 
+  _restoreHandlers() {
+    if (this._callback.rollupClick) {
+      this.setRollupButtonClickHandler(this._callback.rollupClick);
+    }
+    if (this._callback.favoriteClick) {
+      this.setFavoriteButtonClickHandler(this._callback.favoriteClick);
+    }
+  }
+
   setRollupButtonClickHandler(callback) {
-    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', callback);
+    this._callback.rollupClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', callback);
+  }
+
+  setFavoriteButtonClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', () => {
+      callback();
+      this.updateElement(this.element);
+    });
   }
 }

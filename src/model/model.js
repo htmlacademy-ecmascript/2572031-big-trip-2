@@ -36,4 +36,11 @@ export default class Model {
 
     return allDestination.find((item) => item.id === id);
   }
+
+  updatePoint(point) {
+    const index = this.point.findIndex((item) => item.id === point.id);
+    if (index !== -1) {
+      this.point[index] = point;
+    }
+  }
 }

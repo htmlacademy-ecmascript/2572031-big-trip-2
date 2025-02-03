@@ -2,18 +2,22 @@ import MainInfoView from './view/main-info-view.js';
 import FiltersView from './view/filters-view.js';
 import SortView from './view/sort-view.js';
 import EventsListView from './view/events-list-view.js';
-import EventsEditView from './view/events-edit-view.js';
-import EventsItemView from './view/events-item-view.js';
-import {render, replace, remove} from './framework/render.js';
-
+import {render} from './framework/render.js';
+import PointPresenter from './point-presenter.js';
+import { sortPoints } from './utils.js';
 export default class Presenter {
   sortContainer = null;
   eventsContainer = new EventsListView();
+  #currentEdit = null;
+  #currentSortType = 'day';
+  #points = [];
+  #model = null;
 
   constructor(container, model) {
     this.container = container;
     this.model = model;
     this.sortContainer = document.querySelector('.trip-events');
+    this.#points = this.model.getPoints();
   }
 
   init() {
@@ -36,7 +40,10 @@ export default class Presenter {
   }
 
   renderSort() {
-    render(new SortView(), this.sortContainer);
+    const sortView = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange,
+    });
+    render(sortView, this.sortContainer);
   }
 
   renderEventsList() {
@@ -44,48 +51,47 @@ export default class Presenter {
   }
 
   renderEventsItems() {
-    const points = this.model.getPoints().slice(0, 3);
-    points.forEach((point) => {
+    if (this.#currentEdit) {
+      this.#currentEdit.closeEdit();
+      this.#currentEdit = null; // Сбрасываем текущий открытый PointPresenter
+    }
+
+    const sortedPoints = sortPoints(this.#points, this.#currentSortType);
+    this.eventsContainer.element.innerHTML = '';
+
+    sortedPoints.forEach((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const offers = this.model.getOffersById(point.type, point.offers);
-      const eventItem = new EventsItemView(point, destination, offers);
-      const eventEdit = new EventsEditView(point, destination, offers, this.model.getDestinations());
-
-      eventItem.setRollupButtonClickHandler(() => {
-        replace(eventEdit, eventItem);
-        this.setEditModeHandlers(eventEdit, eventItem);
-      });
-
-      render(eventItem, this.eventsContainer.element, 'beforeend');
+      const allOffers = this.model.getOffers();
+      const pointPresenter = new PointPresenter(
+        point,
+        destination,
+        offers,
+        this.model.getDestinations(),
+        this.#handleDataChange,
+        this.#handleEditOpen,
+        allOffers,
+      );
+      pointPresenter.init(this.eventsContainer.element);
     });
   }
 
-  setEditModeHandlers(eventEdit, eventItem) {
-    this.eventEdit = eventEdit;
-    this.eventItem = eventItem;
-
-    eventEdit.setFormSubmitHandler(() => {
-      replace(eventItem, eventEdit);
-      remove(eventEdit);
-      document.removeEventListener('keydown', this.escKeyDownHandler);
-    });
-
-    eventEdit.setRollupButtonClickHandler(() => {
-      replace(eventItem, eventEdit);
-      remove(eventEdit);
-      document.removeEventListener('keydown', this.escKeyDownHandler);
-    });
-
-    document.addEventListener('keydown', this.escKeyDownHandler);
-  }
-
-  escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      replace(this.eventItem, this.eventEdit);
-      remove(this.eventEdit);
-      document.removeEventListener('keydown', this.escKeyDownHandler);
-    }
+  #handleDataChange = (updatedEvent) => {
+    this.model.updatePoint(updatedEvent);
   };
 
+  #handleEditOpen = (pointPresenter) => {
+    if (this.#currentEdit && this.#currentEdit !== pointPresenter) {
+      this.#currentEdit.closeEdit();
+    }
+    this.#currentEdit = pointPresenter;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#currentSortType = sortType;
+    this.renderEventsItems();
+  };
 }
